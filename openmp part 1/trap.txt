@@ -1,0 +1,62 @@
+#include<stdio.h>
+#include<omp.h>
+#include<time.h>
+
+int n;
+double ini,fin,h,twop,twp;
+
+double func(double i)
+{
+	return 3*i*i;
+}
+
+
+void wop()
+{
+	double integral=0, sum=0;
+	for(int i=1;i<n;i++)
+	{
+		double x=ini+i*h;
+		sum+=func(x);
+	}
+	integral=(h/2)*(func(ini)+func(fin)+(2*sum));
+	printf("Area under the curve without parallelisation: %lf\n",integral);
+}
+
+void wp()
+{
+	double integral, sum=0;
+	#pragma omp parallel for reduction(+:sum)
+	for(int i=0;i<=n;i++)
+	{
+		double x=i*h+ini;
+		sum+=func(x);
+	}
+	integral=(h/2)*(func(ini)+func(fin)+(2*sum));
+	printf("Area under the curve with parallelisation: %lf\n",integral);
+}
+		
+		
+	
+int main()
+{
+	
+	printf("Enter the number of intervals: ");
+	scanf("%d",&n);
+	printf("Enter the initial value: ");
+	scanf("%lf",&ini);
+	printf("Enter the final value: ");
+	scanf("%lf",&fin);
+	h=(fin-ini)/n;
+	printf("Value of ini: %lf\n",ini);
+	clock_t start=clock();
+	wop();
+	clock_t stop=clock();
+	twop=stop-start/CLOCKS_PER_SEC;
+	clock_t start1=clock();
+	wp();
+	clock_t stop1=clock();
+	twp=stop1-start1/CLOCKS_PER_SEC;
+	printf("Time taken with parallel: %lf\n",twp);
+	printf("Time taken without parallel: %lf\n", twop);
+}
