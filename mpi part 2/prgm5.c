@@ -17,15 +17,22 @@ int isprime(int x){
 
 void main(int argc,char *argv[])
 {
-	int size,rank,root=0;
  int n ;
-        printf("enter n\n");
-        scanf("%d",&n);
+        
+       
+        int size,rank,root=0;
 int *globaldata = malloc(n*sizeof(int));
 	MPI_Init(&argc,&argv);
 	MPI_Comm_size(MPI_COMM_WORLD,&size);
 	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+	if(rank==0)
+	{
+	printf(" enter the calue of n\n");
+	
+        scanf("%d",&n);}
+        
 	MPI_Bcast(&n,1,MPI_INT,root,MPI_COMM_WORLD);
+	
 	for(int i=0;i<n;i++)
 	{
 		globaldata[i] = i+1;
