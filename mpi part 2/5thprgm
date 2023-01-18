@@ -36,7 +36,7 @@ int main() {
     ep = sp+ln;
 
     if(rank == size-1)
-        ep = n+1;
+        ep = n-1;
 
     for(int i = sp ; i < ep ; i++) {
         if(isPrime(i))
