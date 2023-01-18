@@ -1,0 +1,50 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<mpi.h>
+
+int isPrime(int x) {
+
+    if(x == 0 || x == 1)
+        return 0;
+
+    for(int i = 2 ; i <= x/i ; i++)
+        if(x%i == 0)
+            return 0;
+
+    return 1;
+
+}
+
+int main() {
+
+    int size , rank , n , ln , sp , ep;
+
+    MPI_Init(NULL, NULL);
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    if(rank == 0) {
+        scanf("%d" , &n);
+        ln = n/size;
+    }
+
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&ln, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    sp = rank*ln;
+    ep = sp+ln;
+
+    if(rank == size-1)
+        ep = n+1;
+
+    for(int i = sp ; i < ep ; i++) {
+        if(isPrime(i))
+            printf("Process %d --> %d is Prime\n" , rank, i);
+    }
+
+    MPI_Finalize();
+
+    return 0;
+
+}
